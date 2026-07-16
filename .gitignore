@@ -1,0 +1,46 @@
+# macOS
+.DS_Store
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+terraform.tfvars
+terraform.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+*.tfplan
+*.plan
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+*.key
+*.crt
+
+# Kubernetes / local config artifacts
+kubeconfig
+*.kubeconfig
+
+# Logs / temp
+*.log
+*.tmp
+*.bak
+tmp/
+temp/
+
+# OS / archive noise
+*.zip
+*.tar
+*.tar.gz
