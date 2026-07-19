@@ -17,17 +17,17 @@ module "networking" {
 module "eks" {
   source = "../../modules/eks"
 
-  name_prefix          = var.name_prefix
-  cluster_name         = var.cluster_name
-  environment          = var.environment
-  kubernetes_version   = var.kubernetes_version
-  vpc_id               = module.networking.vpc_id
-  vpc_cidr             = var.vpc_cidr
-  private_subnet_ids   = module.networking.private_subnet_ids
-  endpoint_access_mode = var.endpoint_access_mode
-  authentication_mode  = var.authentication_mode
+  name_prefix           = var.name_prefix
+  cluster_name          = var.cluster_name
+  environment           = var.environment
+  kubernetes_version    = var.kubernetes_version
+  vpc_id                = module.networking.vpc_id
+  vpc_cidr              = var.vpc_cidr
+  private_subnet_ids    = module.networking.private_subnet_ids
+  endpoint_access_mode  = var.endpoint_access_mode
+  authentication_mode   = var.authentication_mode
   access_principal_arns = var.access_principal_arns
-  tags                 = var.tags
+  tags                  = var.tags
 }
 
 # Deploy EKS add-ons 
