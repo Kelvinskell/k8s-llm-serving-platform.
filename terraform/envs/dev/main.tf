@@ -38,7 +38,6 @@ module "eks_addons" {
   cluster_oidc_provider_arn = module.eks.cluster_oidc_provider_arn
   tags                      = var.tags
 
-  depends_on = [module.eks]
 }
 
 # Create CPU and GPU worker node groups
@@ -53,5 +52,4 @@ module "nodegroups" {
   gpu_instance_types = var.gpu_instance_types
   tags               = var.tags
 
-  depends_on = [module.eks_addons]
 }
