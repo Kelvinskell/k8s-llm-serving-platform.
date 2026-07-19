@@ -50,6 +50,19 @@ module "nodegroups" {
   subnet_ids         = module.networking.private_subnet_ids
   cpu_instance_types = var.cpu_instance_types
   gpu_instance_types = var.gpu_instance_types
+  gpu_ami_type       = var.gpu_ami_type
   tags               = var.tags
 
+}
+
+# Deploy NVIDIA device plugin via Helm as a self-managed add-on.
+module "nvidia_device_plugin" {
+  source = "../../modules/nvidia-device-plugin"
+
+  enabled = var.enable_nvidia_device_plugin
+
+  depends_on = [
+    module.eks,
+    module.nodegroups
+  ]
 }

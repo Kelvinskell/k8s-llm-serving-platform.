@@ -43,6 +43,7 @@ resource "aws_eks_node_group" "gpu" {
   }
 
   instance_types = var.gpu_instance_types
+  ami_type       = var.gpu_ami_type
   capacity_type  = "ON_DEMAND"
 
   labels = {

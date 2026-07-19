@@ -109,3 +109,15 @@ variable "gpu_instance_types" {
   type        = list(string)
   default     = ["g4dn.xlarge"]
 }
+
+variable "gpu_ami_type" {
+  description = "EKS AMI type used by the GPU node group."
+  type        = string
+  default     = "AL2023_x86_64_NVIDIA"
+}
+
+variable "enable_nvidia_device_plugin" {
+  description = "Enable self-managed NVIDIA device plugin via Helm."
+  type        = bool
+  default     = true
+}

@@ -72,6 +72,12 @@ variable "gpu_instance_types" {
   type        = list(string)
 }
 
+variable "gpu_ami_type" {
+  description = "EKS AMI type used by the GPU node group."
+  type        = string
+  default     = "AL2023_x86_64_NVIDIA"
+}
+
 # Shared metadata
 variable "tags" {
   description = "Additional tags applied to all node group resources."
