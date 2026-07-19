@@ -4,6 +4,6 @@ resource "aws_vpc" "llm_vpc" {
   enable_dns_hostnames = true
 
   tags = merge(local.common_tags, {
-    Name = "${var.name_prefix}-vpc"
+    Name = "${var.name_prefix}-vpc-${var.environment}"
   })
 }

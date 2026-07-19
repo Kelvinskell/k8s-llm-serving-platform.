@@ -14,16 +14,22 @@ variable "terraform_execution_role_name" {
   default     = "k8s-llm-serving-terraform-role"
 }
 
-variable "name_prefix" {
-  description = "Prefix used to name infrastructure resources."
+variable "environment" {
+  description = "Environment name (dev, stage, etc.) used in resource naming."
   type        = string
-  default     = "k8s-llm-serving-dev"
+  default     = "dev"
+}
+
+variable "name_prefix" {
+  description = "Base project prefix used for resource naming."
+  type        = string
+  default     = "k8s-llm-serving"
 }
 
 variable "cluster_name" {
   description = "EKS cluster name used for Kubernetes discovery tags."
   type        = string
-  default     = "k8s-llm-serving-dev"
+  default     = "k8s-llm-serving-eks-dev"
 }
 
 variable "vpc_cidr" {

@@ -7,7 +7,7 @@ resource "aws_route_table" "public_route_table" {
   }
 
   tags = merge(local.common_tags, {
-    Name = "${var.name_prefix}-public-rt"
+    Name = "${var.name_prefix}-public-rt-${var.environment}"
   })
 }
 
@@ -29,7 +29,7 @@ resource "aws_route_table" "private_route_tables" {
   }
 
   tags = merge(local.common_tags, {
-    Name = "${var.name_prefix}-private-rt-${count.index + 1}"
+    Name = "${var.name_prefix}-private-rt-${count.index + 1}-${var.environment}"
   })
 }
 

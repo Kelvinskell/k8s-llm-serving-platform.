@@ -8,6 +8,11 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "environment" {
+  description = "Environment suffix used in resource names (for example: dev, stage)."
+  type        = string
+}
+
 variable "vpc_cidr" {
   description = "CIDR block for the VPC."
   type        = string

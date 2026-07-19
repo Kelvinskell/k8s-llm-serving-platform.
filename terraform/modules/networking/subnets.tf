@@ -7,7 +7,7 @@ resource "aws_subnet" "public_subnets" {
   map_public_ip_on_launch = true
 
   tags = merge(local.common_tags, {
-    Name                     = "${var.name_prefix}-public-${count.index + 1}"
+    Name                     = "${var.name_prefix}-public-${count.index + 1}-${var.environment}"
     "kubernetes.io/role/elb" = "1"
   })
 }
@@ -20,7 +20,7 @@ resource "aws_subnet" "private_subnets" {
   availability_zone = local.selected_azs[count.index]
 
   tags = merge(local.common_tags, {
-    Name                              = "${var.name_prefix}-private-${count.index + 1}"
+    Name                              = "${var.name_prefix}-private-${count.index + 1}-${var.environment}"
     "kubernetes.io/role/internal-elb" = "1"
   })
 }

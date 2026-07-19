@@ -4,7 +4,7 @@ resource "aws_eip" "nat_eips" {
   domain = "vpc"
 
   tags = merge(local.common_tags, {
-    Name = "${var.name_prefix}-nat-eip-${count.index + 1}"
+    Name = "${var.name_prefix}-nat-eip-${count.index + 1}-${var.environment}"
   })
 }
 
@@ -15,7 +15,7 @@ resource "aws_nat_gateway" "nat_gateways" {
   subnet_id     = aws_subnet.public_subnets[count.index].id
 
   tags = merge(local.common_tags, {
-    Name = "${var.name_prefix}-nat-${count.index + 1}"
+    Name = "${var.name_prefix}-nat-${count.index + 1}-${var.environment}"
   })
 
   depends_on = [aws_internet_gateway.llm_igw]
