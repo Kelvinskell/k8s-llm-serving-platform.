@@ -78,3 +78,21 @@ variable "tags" {
     Project     = "k8s-llm-serving-platform"
   }
 }
+
+# EKS control plane configuration
+variable "kubernetes_version" {
+  description = "Kubernetes version for EKS control plane."
+  type        = string
+  default     = "1.31"
+}
+
+variable "endpoint_access_mode" {
+  description = "EKS API endpoint access mode: private, public, or both."
+  type        = string
+  default     = "private"
+
+  validation {
+    condition     = contains(["private", "public", "both"], var.endpoint_access_mode)
+    error_message = "endpoint_access_mode must be one of: private, public, both."
+  }
+}
