@@ -5,7 +5,9 @@ resource "aws_eks_addon" "vpc_cni" {
   addon_version               = null
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
-  service_account_role_arn    = null
+  service_account_role_arn    = aws_iam_role.vpc_cni.arn
+
+  depends_on = [aws_iam_role_policy_attachment.vpc_cni]
 
   tags = var.tags
 }

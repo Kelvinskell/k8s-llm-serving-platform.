@@ -26,12 +26,6 @@ resource "aws_iam_role_policy_attachment" "worker_nodes" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
 }
 
-# Allow pod networking setup on worker nodes.
-resource "aws_iam_role_policy_attachment" "cni" {
-  role       = aws_iam_role.eks_node_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-}
-
 # Allow nodes to pull container images from Amazon ECR.
 resource "aws_iam_role_policy_attachment" "ecr_read_only" {
   role       = aws_iam_role.eks_node_role.name
