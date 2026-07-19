@@ -101,3 +101,25 @@ Capture and store outputs for:
 1. DaemonSet status command.
 2. Plugin pod status command.
 3. Node allocatable output showing `nvidia.com/gpu`.
+
+## Baseline Test: Exclusive GPU Behavior (No Time-Slicing or MIG)
+
+### Goal
+Capture default scheduler behavior when GPU sharing mode is not enabled.
+
+### Apply scenario
+```bash
+kubectl apply -f load-testing/scenarios/gpu-baseline-exclusive.yaml
+```
+
+### Observe behaviour using the following commands
+```bash
+kubectl -n gpu-baseline get pods -o wide
+kubectl -n gpu-baseline describe pod gpu-b
+kubectl describe node | grep -A8 -i allocatable
+```
+
+### Cleanup
+```bash
+kubectl delete -f load-testing/scenarios/gpu-baseline-exclusive.yaml
+```
