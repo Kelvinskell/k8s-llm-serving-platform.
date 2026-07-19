@@ -15,7 +15,7 @@ Excluded (this phase):
 - Serving stack (vLLM/KServe).
 - Production autoscaling policies.
 
-## Deliverables
+## Deliverables 
 - Terraform-managed GPU node group with explicit NVIDIA AMI type.
 - Terraform-managed NVIDIA device plugin Helm release.
 - Runbook for plugin verification and troubleshooting.
