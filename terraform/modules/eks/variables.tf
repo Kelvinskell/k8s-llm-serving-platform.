@@ -53,6 +53,25 @@ variable "endpoint_access_mode" {
   }
 }
 
+# EKS authentication mode for control-plane API authentication.
+variable "authentication_mode" {
+  description = "EKS authentication mode: CONFIG_MAP, API_AND_CONFIG_MAP, or API."
+  type        = string
+  default     = "API"
+
+  validation {
+    condition     = contains(["CONFIG_MAP", "API_AND_CONFIG_MAP", "API"], var.authentication_mode)
+    error_message = "authentication_mode must be one of: CONFIG_MAP, API_AND_CONFIG_MAP or API."
+  }
+}
+
+# IAM principals that will receive access entries and policy associations.
+variable "access_principal_arns" {
+  description = "IAM principal ARNs to grant EKS cluster access via access entries."
+  type        = list(string)
+  default     = []
+}
+
 # Logging and tags
 variable "cluster_log_types" {
   description = "Enabled EKS control plane log types."

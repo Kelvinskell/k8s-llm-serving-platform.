@@ -21,6 +21,13 @@ private_subnet_cidrs = [
 # EKS configuration
 kubernetes_version   = "1.36"
 endpoint_access_mode = "public"
+authentication_mode  = "API"
+
+# IAM principals that receive EKS cluster-admin via access entries
+access_principal_arns = [
+  "arn:aws:iam::123456789012:role/k8s-llm-serving-terraform-role",
+  "arn:aws:iam::123456789012:user/your-user-name",
+]
 
 # Node group instance types
 cpu_instance_types = ["t3.large"]

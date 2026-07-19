@@ -8,3 +8,9 @@ locals {
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   })
 }
+
+locals {
+  # Use a set so duplicate ARNs do not create duplicate for_each instances.
+  normalized_access_principal_arns = toset(var.access_principal_arns)
+}
+

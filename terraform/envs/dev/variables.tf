@@ -97,6 +97,25 @@ variable "endpoint_access_mode" {
   }
 }
 
+# EKS authentication and API-based access bootstrap
+variable "authentication_mode" {
+  description = "EKS authentication mode for this environment."
+  type        = string
+  default     = "API"
+
+  validation {
+    condition     = contains(["CONFIG_MAP", "API_AND_CONFIG_MAP", "API"], var.authentication_mode)
+    error_message = "authentication_mode must be one of: CONFIG_MAP, API_AND_CONFIG_MAP, API."
+  }
+}
+
+# Principals that receive cluster-admin via EKS access entries
+variable "access_principal_arns" {
+  description = "IAM principal ARNs that should receive EKS cluster admin via access entries."
+  type        = list(string)
+  default     = []
+}
+
 # Node group instance selection
 variable "cpu_instance_types" {
   description = "EC2 instance types for the CPU node group."
