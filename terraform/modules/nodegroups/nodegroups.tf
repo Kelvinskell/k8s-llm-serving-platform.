@@ -19,7 +19,8 @@ resource "aws_eks_node_group" "cpu" {
   }
 
   tags = merge(var.tags, {
-    Name = "${var.name_prefix}-cpu-${var.environment}"
+    Name     = "${var.name_prefix}-cpu-${var.environment}"
+    Workload = "general"
   })
 
   depends_on = [
@@ -57,7 +58,8 @@ resource "aws_eks_node_group" "gpu" {
   }
 
   tags = merge(var.tags, {
-    Name = "${var.name_prefix}-gpu-${var.environment}"
+    Name     = "${var.name_prefix}-gpu-${var.environment}"
+    Workload = "inference"
   })
 
   depends_on = [
