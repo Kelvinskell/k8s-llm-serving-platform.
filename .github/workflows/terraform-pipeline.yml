@@ -54,10 +54,13 @@ jobs:
         with:
           terraform_version: 1.14.7
 
-      - name: Debug GitHub OIDC claims
-        uses: github/actions-oidc-debugger@main
-        with:
-          audience: sts.amazonaws.com
+      - name: Debug OIDC claims
+        run: |
+          token="$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" | jq -r '.value')"
+
+          payload="$(echo "$token" | cut -d '.' -f2 | tr '_-' '/+' | base64 -d 2>/dev/null || true)"
+          echo "$payload" | jq .
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
