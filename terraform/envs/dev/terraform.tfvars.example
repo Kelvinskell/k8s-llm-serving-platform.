@@ -1,0 +1,19 @@
+aws_region                   = "eu-west-1"
+aws_account_id               = "123456789012"
+terraform_execution_role_name = "k8s-llm-serving-terraform-role"
+
+name_prefix  = "k8s-llm-serving-dev"
+cluster_name = "k8s-llm-serving-dev"
+
+vpc_cidr             = "10.20.0.0/16"
+az_count             = 2
+public_subnet_cidrs  = ["10.20.0.0/24", "10.20.1.0/24"]
+private_subnet_cidrs = ["10.20.10.0/24", "10.20.11.0/24"]
+
+nat_gateway_mode = "single"
+
+tags = {
+  Environment = "dev"
+  ManagedBy   = "Terraform"
+  Project     = "k8s-llm-serving-platform"
+}
