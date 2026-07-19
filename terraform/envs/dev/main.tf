@@ -25,7 +25,6 @@ module "eks" {
   vpc_cidr             = var.vpc_cidr
   private_subnet_ids   = module.networking.private_subnet_ids
   endpoint_access_mode = var.endpoint_access_mode
-  # Configure EKS auth mode and bootstrap API access for selected IAM principals.
   authentication_mode  = var.authentication_mode
   access_principal_arns = var.access_principal_arns
   tags                 = var.tags
