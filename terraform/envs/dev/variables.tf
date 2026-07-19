@@ -96,3 +96,14 @@ variable "endpoint_access_mode" {
     error_message = "endpoint_access_mode must be one of: private, public, both."
   }
 }
+
+# Node group instance selection
+variable "cpu_instance_types" {
+  description = "EC2 instance types for the CPU node group."
+  type        = list(string)
+}
+
+variable "gpu_instance_types" {
+  description = "EC2 instance types for the GPU node group."
+  type        = list(string)
+}

@@ -36,3 +36,18 @@ module "eks_addons" {
   cluster_version = var.kubernetes_version
   tags            = var.tags
 }
+
+# Create CPU and GPU worker node groups
+module "nodegroups" {
+  source = "../../modules/nodegroups"
+
+  name_prefix        = var.name_prefix
+  environment        = var.environment
+  cluster_name       = module.eks.cluster_name
+  subnet_ids         = module.networking.private_subnet_ids
+  cpu_instance_types = var.cpu_instance_types
+  gpu_instance_types = var.gpu_instance_types
+  tags               = var.tags
+
+  depends_on = [module.eks_addons]
+}

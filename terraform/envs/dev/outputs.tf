@@ -33,3 +33,13 @@ output "eks_cluster_oidc_issuer_url" {
   description = "EKS cluster OIDC issuer URL."
   value       = module.eks.cluster_oidc_issuer_url
 }
+
+output "cpu_node_group_name" {
+  description = "CPU node group name."
+  value       = module.nodegroups.cpu_node_group_name
+}
+
+output "gpu_node_group_name" {
+  description = "GPU node group name."
+  value       = module.nodegroups.gpu_node_group_name
+}
