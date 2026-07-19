@@ -25,7 +25,6 @@ resource "aws_eks_node_group" "cpu" {
 
   depends_on = [
     aws_iam_role_policy_attachment.worker_nodes,
-    aws_iam_role_policy_attachment.cni,
     aws_iam_role_policy_attachment.ecr_read_only
   ]
 }
@@ -64,7 +63,6 @@ resource "aws_eks_node_group" "gpu" {
 
   depends_on = [
     aws_iam_role_policy_attachment.worker_nodes,
-    aws_iam_role_policy_attachment.cni,
     aws_iam_role_policy_attachment.ecr_read_only
   ]
 }
