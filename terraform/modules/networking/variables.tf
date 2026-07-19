@@ -57,7 +57,5 @@ variable "nat_gateway_mode" {
 variable "tags" {
   description = "Additional tags applied to all resources."
   type        = map(string)
-  default = {
-    ManagedBy = "Terraform"
-  }
+  default     = {}
 }

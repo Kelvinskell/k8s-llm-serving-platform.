@@ -29,7 +29,6 @@ variable "cluster_name" {
 variable "vpc_cidr" {
   description = "VPC CIDR for this environment."
   type        = string
-  default     = "10.20.0.0/16"
 }
 
 variable "az_count" {
@@ -46,13 +45,11 @@ variable "az_count" {
 variable "public_subnet_cidrs" {
   description = "Public subnet CIDRs. Must match az_count."
   type        = list(string)
-  default     = ["10.20.0.0/24", "10.20.1.0/24"]
 }
 
 variable "private_subnet_cidrs" {
   description = "Private subnet CIDRs. Must match az_count."
   type        = list(string)
-  default     = ["10.20.10.0/24", "10.20.11.0/24"]
 }
 
 variable "nat_gateway_mode" {
