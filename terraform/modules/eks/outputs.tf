@@ -24,3 +24,8 @@ output "cluster_oidc_issuer_url" {
   description = "OIDC issuer URL for IRSA integrations."
   value       = try(aws_eks_cluster.cluster.identity[0].oidc[0].issuer, null)
 }
+
+output "cluster_oidc_provider_arn" {
+  description = "IAM OIDC provider ARN for IRSA integrations."
+  value       = aws_iam_openid_connect_provider.cluster_oidc.arn
+}

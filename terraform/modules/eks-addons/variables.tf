@@ -8,6 +8,16 @@ variable "cluster_version" {
   type        = string
 }
 
+variable "cluster_oidc_issuer_url" {
+  description = "OIDC issuer URL used for IRSA trust policies."
+  type        = string
+}
+
+variable "cluster_oidc_provider_arn" {
+  description = "IAM OIDC provider ARN used for IRSA trust policies."
+  type        = string
+}
+
 variable "tags" {
   description = "Tags applied to add-on resources."
   type        = map(string)
