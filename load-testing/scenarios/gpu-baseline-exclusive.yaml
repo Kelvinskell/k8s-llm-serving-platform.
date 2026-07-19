@@ -1,3 +1,15 @@
+# Baseline GPU exclusivity test scenario.
+# Tests default Kubernetes scheduler behavior when GPU sharing (time-slicing/MIG) is NOT enabled.
+# Full explanation: see docs/runbooks/phase-01-gpu-plugin-verification.md#baseline-test-exclusive-gpu-behavior-no-time-slicing-or-mig
+# 
+# Expected behavior:
+# - gpu-a pod will be Running, holding 1 GPU for 15 minutes
+# - gpu-b pod will remain Pending (cannot schedule because gpu-a already holds the only GPU on the same node)
+#
+# Run: kubectl apply -f load-testing/scenarios/gpu-baseline-exclusive.yaml
+# Observe: kubectl -n gpu-baseline get pods -o wide
+# Cleanup: kubectl delete -f load-testing/scenarios/gpu-baseline-exclusive.yaml
+
 apiVersion: v1
 kind: Namespace
 metadata:
