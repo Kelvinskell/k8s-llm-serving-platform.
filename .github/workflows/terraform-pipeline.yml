@@ -60,6 +60,10 @@ jobs:
           role-to-assume: ${{ vars.ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
+      # Keep formatting consistent before runtime files are generated.
+      - name: Terraform fmt check
+        run: terraform fmt -check -recursive ../../
+
       # Build a runtime tfvars file from GitHub Environment variables.
       - name: Generate runtime tfvars
         run: |
@@ -73,10 +77,6 @@ jobs:
           public_subnet_cidrs  = ${PUBLIC_SUBNET_CIDRS}
           private_subnet_cidrs = ${PRIVATE_SUBNET_CIDRS}
           EOF
-
-      # Keep formatting consistent before plan/apply stages.
-      - name: Terraform fmt check
-        run: terraform fmt -check -recursive ../../
 
       - name: Terraform init
         run: terraform init -reconfigure
