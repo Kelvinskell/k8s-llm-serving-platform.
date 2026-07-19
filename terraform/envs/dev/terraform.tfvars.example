@@ -20,7 +20,7 @@ private_subnet_cidrs = [
 
 # EKS configuration
 kubernetes_version   = "1.36"
-endpoint_access_mode = "private"
+endpoint_access_mode = "public"
 
 # Node group instance types
 cpu_instance_types = ["t3.large"]
