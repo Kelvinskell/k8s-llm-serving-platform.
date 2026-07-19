@@ -28,15 +28,6 @@ module "eks" {
   tags                 = var.tags
 }
 
-# Deploy EKS add-ons 
-module "eks_addons" {
-  source = "../../modules/eks-addons"
-
-  cluster_name    = module.eks.cluster_name
-  cluster_version = var.kubernetes_version
-  tags            = var.tags
-}
-
 # Create CPU and GPU worker node groups
 module "nodegroups" {
   source = "../../modules/nodegroups"
@@ -49,5 +40,17 @@ module "nodegroups" {
   gpu_instance_types = var.gpu_instance_types
   tags               = var.tags
 
-  depends_on = [module.eks_addons]
+  depends_on = [module.eks]
+}
+
+
+# Deploy EKS add-ons 
+module "eks_addons" {
+  source = "../../modules/eks-addons"
+
+  cluster_name    = module.eks.cluster_name
+  cluster_version = var.kubernetes_version
+  tags            = var.tags
+
+  depends_on = [module.nodegroups]
 }
