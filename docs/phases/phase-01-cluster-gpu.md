@@ -44,6 +44,7 @@ Excluded (this phase):
 	- observed on GPU node: `nvidia.com/gpu: 1`
 - Node labels show GPU placement intent:
 	- `kubectl get nodes -L gpu,workload`
+- Baseline exclusivity scenario executed from [load-testing/scenarios/gpu-baseline-exclusive.yaml](load-testing/scenarios/gpu-baseline-exclusive.yaml) to force same-node contention and validate default non-sharing behavior before time-slicing/MIG.
 
 ## Remaining Work to Close Phase 1
 - Run and capture output for at least 2 concurrent GPU test pods.
