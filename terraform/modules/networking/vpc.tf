@@ -1,3 +1,4 @@
+# VPC for Kubernetes cluster with DNS enabled for service discovery.
 resource "aws_vpc" "llm_vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
