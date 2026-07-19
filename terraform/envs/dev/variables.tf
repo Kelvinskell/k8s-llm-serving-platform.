@@ -101,9 +101,11 @@ variable "endpoint_access_mode" {
 variable "cpu_instance_types" {
   description = "EC2 instance types for the CPU node group."
   type        = list(string)
+  default     = ["t3.large"]
 }
 
 variable "gpu_instance_types" {
   description = "EC2 instance types for the GPU node group."
   type        = list(string)
+  default     = ["g4dn.xlarge"]
 }
