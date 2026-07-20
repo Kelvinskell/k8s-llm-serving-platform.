@@ -150,5 +150,5 @@ variable "time_slicing_enabled" {
 variable "time_slicing_replicas" {
   description = "Number of GPU slices."
   type        = number
-  default     = 4
+  default     = 3
 }
