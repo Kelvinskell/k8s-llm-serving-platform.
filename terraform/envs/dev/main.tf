@@ -62,6 +62,8 @@ module "nvidia_device_plugin" {
   source = "../../modules/nvidia-device-plugin"
 
   enabled = var.enable_nvidia_device_plugin
+  time_slicing_enabled   = var.time_slicing_enabled
+  time_slicing_replicas  = var.time_slicing_replicas
 
   depends_on = [
     module.eks,

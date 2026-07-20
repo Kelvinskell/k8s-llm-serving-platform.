@@ -140,3 +140,15 @@ variable "enable_nvidia_device_plugin" {
   type        = bool
   default     = true
 }
+
+variable "time_slicing_enabled" {
+  description = "Enable GPU time-slicing."
+  type        = bool
+  default     = true
+}
+
+variable "time_slicing_replicas" {
+  description = "Number of GPU slices."
+  type        = number
+  default     = 4
+}

@@ -23,6 +23,12 @@ resource "helm_release" "nvidia_device_plugin" {
       gfd = {
         enabled = var.gfd_enabled
       }
+      devicePlugin = var.time_slicing_enabled ? {
+        config = {
+          shares = var.time_slicing_replicas
+          any    = 1
+        }
+      } : {}
     })
   ]
 }

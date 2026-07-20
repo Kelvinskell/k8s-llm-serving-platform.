@@ -63,3 +63,13 @@ variable "gfd_enabled" {
   type        = bool
   default     = false
 }
+
+variable "time_slicing_enabled" {
+  description = "Enable GPU time-slicing."
+  type        = bool
+}
+
+variable "time_slicing_replicas" {
+  description = "Number of slices per GPU."
+  type        = number
+}
