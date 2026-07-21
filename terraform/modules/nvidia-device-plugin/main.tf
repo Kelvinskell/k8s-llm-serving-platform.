@@ -9,6 +9,24 @@ resource "helm_release" "nvidia_device_plugin" {
 
   values = [
     yamlencode({
+      config = {
+        map = {
+          default = yamlencode({
+            version = "v1"
+            sharing = {
+              timeSlicing = {
+                resources = [
+                  {
+                    name     = "nvidia.com/gpu"
+                    replicas = var.time_slicing_replicas
+                  }
+                ]
+              }
+            }
+          })
+        }
+        default = "default"
+      }
       nodeSelector = {
         gpu = var.node_selector_gpu
       }
@@ -23,12 +41,6 @@ resource "helm_release" "nvidia_device_plugin" {
       gfd = {
         enabled = var.gfd_enabled
       }
-      devicePlugin = var.time_slicing_enabled ? {
-        config = {
-          shares = var.time_slicing_replicas
-          any    = 1
-        }
-      } : {}
     })
   ]
 }
