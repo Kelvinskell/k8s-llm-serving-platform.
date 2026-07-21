@@ -1,3 +1,4 @@
+# Public route table: routes 0.0.0.0/0 through internet gateway.
 resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.llm_vpc.id
 
@@ -11,6 +12,7 @@ resource "aws_route_table" "public_route_table" {
   })
 }
 
+# Associate public route table with public subnets.
 resource "aws_route_table_association" "public_route_associations" {
   count = var.az_count
 
@@ -18,6 +20,7 @@ resource "aws_route_table_association" "public_route_associations" {
   route_table_id = aws_route_table.public_route_table.id
 }
 
+# Private route tables: routes 0.0.0.0/0 through NAT gateways (one per AZ or shared).
 resource "aws_route_table" "private_route_tables" {
   count = var.az_count
 
@@ -33,6 +36,7 @@ resource "aws_route_table" "private_route_tables" {
   })
 }
 
+# Associate private route tables with private subnets.
 resource "aws_route_table_association" "private_route_associations" {
   count = var.az_count
 

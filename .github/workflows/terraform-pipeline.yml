@@ -40,6 +40,11 @@ jobs:
       VPC_CIDR: ${{ vars.VPC_CIDR }}
       PUBLIC_SUBNET_CIDRS: ${{ vars.PUBLIC_SUBNET_CIDRS }}
       PRIVATE_SUBNET_CIDRS: ${{ vars.PRIVATE_SUBNET_CIDRS }}
+      KUBERNETES_VERSION: ${{ vars.KUBERNETES_VERSION }}
+      ENDPOINT_ACCESS_MODE: ${{ vars.ENDPOINT_ACCESS_MODE }}
+      CPU_INSTANCE_TYPES: ${{ vars.CPU_INSTANCE_TYPES }}
+      GPU_INSTANCE_TYPES: ${{ vars.GPU_INSTANCE_TYPES }}
+      ACCESS_PRINCIPAL_ARNS: ${{ vars.ACCESS_PRINCIPAL_ARNS }}
     defaults:
       run:
         shell: bash
@@ -76,6 +81,11 @@ jobs:
 
           public_subnet_cidrs  = ${PUBLIC_SUBNET_CIDRS}
           private_subnet_cidrs = ${PRIVATE_SUBNET_CIDRS}
+          kubernetes_version   = "${KUBERNETES_VERSION}"
+          endpoint_access_mode = "${ENDPOINT_ACCESS_MODE}"
+          cpu_instance_types   = ${CPU_INSTANCE_TYPES}
+          gpu_instance_types   = ${GPU_INSTANCE_TYPES}
+          access_principal_arns = ${ACCESS_PRINCIPAL_ARNS}
           EOF
 
       - name: Terraform init

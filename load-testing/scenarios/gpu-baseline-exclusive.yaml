@@ -1,0 +1,83 @@
+# Baseline GPU exclusivity test scenario.
+# Tests scheduler behavior when GPU sharing (time-slicing) is DISABLED.
+# NOTE: Time-slicing is ENABLED by default (replicas=3). To use this scenario, you must first disable it.
+# See: docs/runbooks/gpu-baseline-exclusive-test.md for full instructions.
+# 
+# Expected behavior (only valid after disabling time-slicing):
+# - gpu-a pod will be Running, holding 1 GPU for 15 minutes
+# - gpu-b pod will remain Pending (cannot schedule because gpu-a already holds the only GPU on the same node)
+#
+# Run: kubectl apply -f load-testing/scenarios/gpu-baseline-exclusive.yaml
+# Observe: kubectl -n gpu-baseline get pods -o wide
+# Cleanup: kubectl delete -f load-testing/scenarios/gpu-baseline-exclusive.yaml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gpu-baseline
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-a
+  namespace: gpu-baseline
+  labels:
+    app: gpu-baseline
+    test: exclusive
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    gpu: "true"
+  tolerations:
+    - key: nvidia.com/gpu
+      operator: Equal
+      value: "true"
+      effect: NoSchedule
+  containers:
+    - name: hold
+      image: nvidia/cuda:12.3.2-base-ubuntu22.04
+      command: ["/bin/bash", "-lc"]
+      args:
+        - |
+          nvidia-smi || true
+          echo "pod-a: holding 1 GPU for 15m"
+          sleep 900
+      resources:
+        limits:
+          nvidia.com/gpu: 1
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-b
+  namespace: gpu-baseline
+  labels:
+    app: gpu-baseline
+spec:
+  restartPolicy: Never
+  nodeSelector:
+    gpu: "true"
+  tolerations:
+    - key: nvidia.com/gpu
+      operator: Equal
+      value: "true"
+      effect: NoSchedule
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              test: exclusive
+  containers:
+    - name: hold
+      image: nvidia/cuda:12.3.2-base-ubuntu22.04
+      command: ["/bin/bash", "-lc"]
+      args:
+        - |
+          nvidia-smi || true
+          echo "pod-b: requests same node as pod-a"
+          sleep 900
+      resources:
+        limits:
+          nvidia.com/gpu: 1

@@ -1,3 +1,4 @@
+# Derive computed values from input variables.
 data "aws_availability_zones" "available_azs" {
   state = "available"
 }

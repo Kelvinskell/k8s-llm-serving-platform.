@@ -1,16 +1,37 @@
-aws_region                   = "eu-west-1"
-aws_account_id               = "123456789012"
+aws_region                    = "eu-west-1"
+aws_account_id                = "123456789012"
 terraform_execution_role_name = "k8s-llm-serving-terraform-role"
 
-name_prefix  = "k8s-llm-serving-dev"
-cluster_name = "k8s-llm-serving-dev"
+name_prefix  = "k8s-llm-serving"
+cluster_name = "k8s-llm-serving-eks-dev"
 
-vpc_cidr             = "10.20.0.0/16"
-az_count             = 2
-public_subnet_cidrs  = ["10.20.0.0/24", "10.20.1.0/24"]
-private_subnet_cidrs = ["10.20.10.0/24", "10.20.11.0/24"]
+vpc_cidr = "10.20.0.0/20"
 
-nat_gateway_mode = "single"
+# Must contain exactly az_count CIDRs.
+public_subnet_cidrs = [
+  "10.20.0.0/24",
+  "10.20.1.0/24",
+]
+
+private_subnet_cidrs = [
+  "10.20.8.0/22",
+  "10.20.12.0/22",
+]
+
+# EKS configuration
+kubernetes_version   = "1.36"
+endpoint_access_mode = "public"
+authentication_mode  = "API"
+
+# IAM principals that receive EKS cluster-admin via access entries
+access_principal_arns = [
+  "arn:aws:iam::123456789012:role/k8s-llm-serving-terraform-role",
+  "arn:aws:iam::123456789012:user/your-user-name",
+]
+
+# Node group instance types
+cpu_instance_types = ["t3.large"]
+gpu_instance_types = ["g4dn.xlarge"]
 
 tags = {
   Environment = "dev"

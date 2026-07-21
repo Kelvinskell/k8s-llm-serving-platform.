@@ -78,3 +78,71 @@ variable "tags" {
     Project     = "k8s-llm-serving-platform"
   }
 }
+
+# EKS control plane configuration
+variable "kubernetes_version" {
+  description = "Kubernetes version for EKS control plane."
+  type        = string
+  default     = "1.31"
+}
+
+variable "endpoint_access_mode" {
+  description = "EKS API endpoint access mode: private, public, or both."
+  type        = string
+  default     = "private"
+
+  validation {
+    condition     = contains(["private", "public", "both"], var.endpoint_access_mode)
+    error_message = "endpoint_access_mode must be one of: private, public, both."
+  }
+}
+
+# EKS authentication and API-based access bootstrap
+variable "authentication_mode" {
+  description = "EKS authentication mode for this environment."
+  type        = string
+  default     = "API"
+
+  validation {
+    condition     = contains(["CONFIG_MAP", "API_AND_CONFIG_MAP", "API"], var.authentication_mode)
+    error_message = "authentication_mode must be one of: CONFIG_MAP, API_AND_CONFIG_MAP, API."
+  }
+}
+
+# Principals that receive cluster-admin via EKS access entries
+variable "access_principal_arns" {
+  description = "IAM principal ARNs that should receive EKS cluster admin via access entries."
+  type        = list(string)
+  default     = []
+}
+
+# Node group instance selection
+variable "cpu_instance_types" {
+  description = "EC2 instance types for the CPU node group."
+  type        = list(string)
+  default     = ["t3.large"]
+}
+
+variable "gpu_instance_types" {
+  description = "EC2 instance types for the GPU node group."
+  type        = list(string)
+  default     = ["g4dn.xlarge"]
+}
+
+variable "gpu_ami_type" {
+  description = "EKS AMI type used by the GPU node group."
+  type        = string
+  default     = "AL2023_x86_64_NVIDIA"
+}
+
+variable "enable_nvidia_device_plugin" {
+  description = "Enable self-managed NVIDIA device plugin via Helm."
+  type        = bool
+  default     = true
+}
+
+variable "time_slicing_replicas" {
+  description = "Number of GPU slices."
+  type        = number
+  default     = 3
+}

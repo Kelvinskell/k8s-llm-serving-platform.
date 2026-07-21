@@ -1,3 +1,4 @@
+# Public subnets for NAT gateways and load balancers.
 resource "aws_subnet" "public_subnets" {
   count = var.az_count
 
@@ -12,6 +13,7 @@ resource "aws_subnet" "public_subnets" {
   })
 }
 
+# Private subnets for EKS control plane and worker nodes.
 resource "aws_subnet" "private_subnets" {
   count = var.az_count
 

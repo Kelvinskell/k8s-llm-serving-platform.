@@ -12,3 +12,60 @@ module "networking" {
   nat_gateway_mode     = var.nat_gateway_mode
   tags                 = var.tags
 }
+
+# Create EKS control plane
+module "eks" {
+  source = "../../modules/eks"
+
+  name_prefix           = var.name_prefix
+  cluster_name          = var.cluster_name
+  environment           = var.environment
+  kubernetes_version    = var.kubernetes_version
+  vpc_id                = module.networking.vpc_id
+  vpc_cidr              = var.vpc_cidr
+  private_subnet_ids    = module.networking.private_subnet_ids
+  endpoint_access_mode  = var.endpoint_access_mode
+  authentication_mode   = var.authentication_mode
+  access_principal_arns = var.access_principal_arns
+  tags                  = var.tags
+}
+
+# Deploy EKS add-ons 
+module "eks_addons" {
+  source = "../../modules/eks-addons"
+
+  cluster_name              = module.eks.cluster_name
+  cluster_version           = var.kubernetes_version
+  cluster_oidc_issuer_url   = module.eks.cluster_oidc_issuer_url
+  cluster_oidc_provider_arn = module.eks.cluster_oidc_provider_arn
+  tags                      = var.tags
+
+}
+
+# Create CPU and GPU worker node groups
+module "nodegroups" {
+  source = "../../modules/nodegroups"
+
+  name_prefix        = var.name_prefix
+  environment        = var.environment
+  cluster_name       = module.eks.cluster_name
+  subnet_ids         = module.networking.private_subnet_ids
+  cpu_instance_types = var.cpu_instance_types
+  gpu_instance_types = var.gpu_instance_types
+  gpu_ami_type       = var.gpu_ami_type
+  tags               = var.tags
+
+}
+
+# Deploy NVIDIA device plugin via Helm as a self-managed add-on.
+module "nvidia_device_plugin" {
+  source = "../../modules/nvidia-device-plugin"
+
+  enabled               = var.enable_nvidia_device_plugin
+  time_slicing_replicas = var.time_slicing_replicas
+
+  depends_on = [
+    module.eks,
+    module.nodegroups
+  ]
+}

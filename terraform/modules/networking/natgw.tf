@@ -1,3 +1,4 @@
+# Elastic IPs for NAT gateways (one per AZ or shared single, based on nat_gateway_mode).
 resource "aws_eip" "nat_eips" {
   count = local.nat_count
 
@@ -8,6 +9,7 @@ resource "aws_eip" "nat_eips" {
   })
 }
 
+# NAT gateways enable private subnet egress without public IPs.
 resource "aws_nat_gateway" "nat_gateways" {
   count = local.nat_count
 
