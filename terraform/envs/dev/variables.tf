@@ -146,3 +146,65 @@ variable "time_slicing_replicas" {
   type        = number
   default     = 3
 }
+
+variable "enable_observability" {
+  description = "Enable kube-prometheus-stack installation."
+  type        = bool
+  default     = true
+}
+
+variable "observability_namespace" {
+  description = "Namespace for kube-prometheus-stack."
+  type        = string
+  default     = "monitoring"
+}
+
+variable "kube_prometheus_stack_chart_version" {
+  description = "Pinned kube-prometheus-stack chart version."
+  type        = string
+  default     = "87.17.0"
+
+  validation {
+    condition     = can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+([-.].+)?$", var.kube_prometheus_stack_chart_version))
+    error_message = "kube_prometheus_stack_chart_version must be a valid chart version (for example: 78.5.0)."
+  }
+}
+
+variable "prometheus_retention" {
+  description = "Prometheus retention period."
+  type        = string
+  default     = "10d"
+
+  validation {
+    condition     = can(regex("^[0-9]+(ms|s|m|h|d|w|y)$", var.prometheus_retention))
+    error_message = "prometheus_retention must be a Prometheus duration (for example: 10d, 24h, 30m)."
+  }
+}
+
+variable "prometheus_storage_class" {
+  description = "StorageClass for Prometheus PVC. Empty means chart default."
+  type        = string
+  default     = "gp2"
+}
+
+variable "prometheus_storage_size" {
+  description = "Prometheus PVC size."
+  type        = string
+  default     = "50Gi"
+
+  validation {
+    condition     = can(regex("^[1-9][0-9]*(Ki|Mi|Gi|Ti|Pi|Ei)$", var.prometheus_storage_size))
+    error_message = "prometheus_storage_size must be a valid Kubernetes quantity (for example: 50Gi)."
+  }
+}
+
+variable "enable_metrics_server" {
+  description = "Enable metrics-server for kubectl top commands."
+  type        = bool
+  default     = true
+}
+
+variable "metrics_server_chart_version" {
+  description = "Pinned metrics-server Helm chart version."
+  type        = string
+}

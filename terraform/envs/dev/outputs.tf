@@ -43,3 +43,14 @@ output "gpu_node_group_name" {
   description = "GPU node group name."
   value       = module.nodegroups.gpu_node_group_name
 }
+
+# Observability outputs
+output "observability_release_name" {
+  description = "kube-prometheus-stack Helm release name."
+  value       = module.observability.release_name
+}
+
+output "observability_namespace" {
+  description = "Namespace where kube-prometheus-stack is installed."
+  value       = module.observability.namespace
+}
