@@ -74,13 +74,13 @@ module "nvidia_device_plugin" {
 module "observability" {
   source = "../../modules/observability"
 
-  enabled                  = var.enable_observability
-  namespace                = var.observability_namespace
-  chart_version            = var.kube_prometheus_stack_chart_version
-  prometheus_retention     = var.prometheus_retention
-  prometheus_storage_class = var.prometheus_storage_class
-  prometheus_storage_size  = var.prometheus_storage_size
-  enable_metrics_server      = var.enable_metrics_server
+  enabled                      = var.enable_observability
+  namespace                    = var.observability_namespace
+  chart_version                = var.kube_prometheus_stack_chart_version
+  prometheus_retention         = var.prometheus_retention
+  prometheus_storage_class     = var.prometheus_storage_class
+  prometheus_storage_size      = var.prometheus_storage_size
+  enable_metrics_server        = var.enable_metrics_server
   metrics_server_chart_version = var.metrics_server_chart_version
 
   depends_on = [

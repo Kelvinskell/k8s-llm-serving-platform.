@@ -207,4 +207,5 @@ variable "enable_metrics_server" {
 variable "metrics_server_chart_version" {
   description = "Pinned metrics-server Helm chart version."
   type        = string
+  default     = "3.13.1"
 }
