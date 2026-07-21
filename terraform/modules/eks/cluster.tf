@@ -14,7 +14,7 @@ resource "aws_eks_cluster" "cluster" {
     endpoint_public_access  = local.endpoint_public_access
   }
 
-    # Select the EKS authentication backend (API, API_AND_CONFIG_MAP, or CONFIG_MAP).
+  # Select the EKS authentication backend (API, API_AND_CONFIG_MAP, or CONFIG_MAP).
   access_config {
     authentication_mode = var.authentication_mode
   }
@@ -39,7 +39,7 @@ resource "aws_eks_access_entry" "principals" {
   ]
 }
 
-  # Grants cluster-admin policy to each configured principal at cluster scope.
+# Grants cluster-admin policy to each configured principal at cluster scope.
 resource "aws_eks_access_policy_association" "cluster_admin" {
   for_each      = local.normalized_access_principal_arns
   cluster_name  = aws_eks_cluster.cluster.name
