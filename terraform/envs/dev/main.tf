@@ -70,7 +70,7 @@ module "nvidia_device_plugin" {
   ]
 }
 
-# Deploy kube-prometheus-stack
+# Deploy kube-prometheus-stack and related components
 module "observability" {
   source = "../../modules/observability"
 
@@ -82,6 +82,8 @@ module "observability" {
   prometheus_storage_size      = var.prometheus_storage_size
   enable_metrics_server        = var.enable_metrics_server
   metrics_server_chart_version = var.metrics_server_chart_version
+  enable_dcgm_exporter         = var.enable_dcgm_exporter
+  dcgm_exporter_chart_version  = var.dcgm_exporter_chart_version
 
   depends_on = [
     module.eks,

@@ -70,3 +70,13 @@ variable "metrics_server_chart_version" {
   description = "Pinned metrics-server chart version."
   type        = string
 }
+
+variable "enable_dcgm_exporter" {
+	description = "Enable Nvidia DCGM Exporter"
+	type = string
+}
+
+variable "dcgm_exporter_chart_version" {
+  description = "Pinned DCGM exporter Helm chart version."
+  type        = string
+}

@@ -65,3 +65,31 @@ resource "helm_release" "metrics_server" {
     })
   ]
 }
+
+# Install DCGM Exporter
+resource "helm_release" "dcgm_exporter" {
+  count = var.enabled && var.enable_dcgm_exporter ? 1 : 0
+
+  name             = "dcgm-exporter"
+  repository       = "https://nvidia.github.io/dcgm-exporter/helm-charts/"
+  chart            = "dcgm-exporter"
+  version          = var.dcgm_exporter_chart_version
+  namespace        = var.namespace
+  create_namespace = true
+
+  wait            = true
+  atomic          = true
+  cleanup_on_fail = true
+  timeout         = var.helm_timeout_seconds
+
+  values = [
+    yamlencode({
+      serviceMonitor = {
+        enabled = true
+        additionalLabels = {
+          release = "kube-prometheus-stack"
+        }
+      }
+    })
+  ]
+}

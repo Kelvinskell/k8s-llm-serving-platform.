@@ -209,3 +209,15 @@ variable "metrics_server_chart_version" {
   type        = string
   default     = "3.13.1"
 }
+
+variable "enable_dcgm_exporter" {
+	description = "Enable Nvidia DCGM Exporter"
+	type = string
+  default = true
+}
+
+variable "dcgm_exporter_chart_version" {
+  description = "Pinned DCGM exporter Helm chart version."
+  type        = string
+  default     = "4.8.3"
+}
