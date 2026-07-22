@@ -103,4 +103,6 @@ resource "helm_release" "dcgm_exporter" {
      ]
     })
   ]
+
+  depends_on = [helm_release.kube_prometheus_stack]
 }

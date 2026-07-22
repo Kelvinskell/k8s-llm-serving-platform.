@@ -88,5 +88,6 @@ module "observability" {
   depends_on = [
     module.eks,
     module.nodegroups
+    module.nvidia_device_plugin
   ]
 }
