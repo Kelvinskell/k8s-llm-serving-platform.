@@ -7,6 +7,7 @@ on:
       - master
     paths:
       - terraform/**
+      - kubernetes/**
       - .github/workflows/**
   # Manual execution. Supports explicit apply/destroy selection.
   workflow_dispatch:
@@ -33,6 +34,8 @@ jobs:
   terraform-dev:
     runs-on: ubuntu-latest
     environment: dev
+    outputs:
+      should_run_k8s: ${{ steps.set-k8s-output.outputs.should_run_k8s }}
     env:
       AWS_REGION: ${{ vars.AWS_REGION }}
       AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
@@ -65,7 +68,6 @@ jobs:
           role-to-assume: ${{ vars.ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      # Keep formatting consistent before runtime files are generated.
       - name: Terraform fmt check
         run: terraform fmt -check -recursive ../../
 
@@ -97,6 +99,16 @@ jobs:
       - name: Terraform plan
         run: terraform plan -var-file=ci.auto.tfvars -no-color
 
+      # Only trigger Kubernetes apply for non-destroy runs.
+      - name: Decide Kubernetes apply
+        id: set-k8s-output
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.terraform_action }}" == "apply" ]]; then
+            echo "should_run_k8s=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run_k8s=false" >> "$GITHUB_OUTPUT"
+          fi
+
       # Apply runs automatically on PR and on manual runs when action=apply.
       - name: Terraform apply (PR + manual apply)
         if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.terraform_action == 'apply')
@@ -106,3 +118,9 @@ jobs:
       - name: Terraform destroy (manual)
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.terraform_action == 'destroy'
         run: terraform destroy -auto-approve -var-file=ci.auto.tfvars
+
+  trigger-k8s:
+    needs: terraform-dev
+    if: needs.terraform-dev.outputs.should_run_k8s == 'true'
+    uses: ./.github/workflows/kubernetes-pipeline.yml
+    secrets: inherit

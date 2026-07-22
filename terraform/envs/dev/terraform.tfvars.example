@@ -38,3 +38,15 @@ tags = {
   ManagedBy   = "Terraform"
   Project     = "k8s-llm-serving-platform"
 }
+
+# Observability configuration (kube-prometheus-stack)
+enable_observability                = true
+observability_namespace             = "monitoring"
+kube_prometheus_stack_chart_version = "78.5.0"
+prometheus_retention                = "10d"
+prometheus_storage_class            = "gp3"
+prometheus_storage_size             = "50Gi"
+
+# Metrics server
+enable_metrics_server       = true
+metrics_server_chart_version = "3.13.1"
