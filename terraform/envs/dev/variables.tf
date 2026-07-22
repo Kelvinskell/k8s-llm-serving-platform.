@@ -211,9 +211,9 @@ variable "metrics_server_chart_version" {
 }
 
 variable "enable_dcgm_exporter" {
-	description = "Enable Nvidia DCGM Exporter"
-	type = string
-  default = true
+  description = "Enable Nvidia DCGM Exporter"
+  type        = string
+  default     = true
 }
 
 variable "dcgm_exporter_chart_version" {

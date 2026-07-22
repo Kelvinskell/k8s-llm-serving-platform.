@@ -75,7 +75,7 @@ resource "helm_release" "dcgm_exporter" {
   chart            = "dcgm-exporter"
   version          = var.dcgm_exporter_chart_version
   namespace        = var.namespace
-  create_namespace = true
+  create_namespace = false
 
   wait            = true
   atomic          = true
@@ -90,6 +90,17 @@ resource "helm_release" "dcgm_exporter" {
           release = "kube-prometheus-stack"
         }
       }
+      nodeSelector = {
+       "nvidia.com/gpu.present" = "true"
+     }
+
+     tolerations = [
+       {
+         key      = "nvidia.com/gpu"
+         operator = "Exists"
+         effect   = "NoSchedule"
+       }
+     ]
     })
   ]
 }
