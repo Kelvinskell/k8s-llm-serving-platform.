@@ -66,7 +66,7 @@ resource "helm_release" "metrics_server" {
   ]
 }
 
-# Install DCGM Exporter
+# Install DCGM (Data Center GPU Manager) Exporter
 resource "helm_release" "dcgm_exporter" {
   count = var.enabled && var.enable_dcgm_exporter ? 1 : 0
 
