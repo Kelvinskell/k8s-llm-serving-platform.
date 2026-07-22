@@ -24,7 +24,7 @@ Excluded (this phase):
 ## Definition of Done
 - [x] Cluster nodes with GPU are joinable and schedulable.
 - [x] NVIDIA device plugin is healthy.
-- [ ] At least 2 test pods can share GPU capacity (time-slicing or configured sharing mode).
+- [x] At least 2 test pods can share GPU capacity (time-slicing or configured sharing mode).
 - [x] Pod scheduling constraints and resource requests are documented.
 
 ## Implementation Notes
