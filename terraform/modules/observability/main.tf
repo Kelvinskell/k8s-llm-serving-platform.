@@ -29,8 +29,8 @@ resource "helm_release" "kube_prometheus_stack" {
 
       prometheus = {
         prometheusSpec = {
-          retention                            = var.prometheus_retention
-          storageSpec                          = local.prometheus_storage_spec
+          retention   = var.prometheus_retention
+          storageSpec = local.prometheus_storage_spec
           # Allow selecting ServiceMonitors and PodMonitors beyond Helm-labeled objects.
           serviceMonitorSelectorNilUsesHelmValues = false
           podMonitorSelectorNilUsesHelmValues     = false
@@ -91,16 +91,16 @@ resource "helm_release" "dcgm_exporter" {
         }
       }
       nodeSelector = {
-       "nvidia.com/gpu.present" = "true"
-     }
+        "nvidia.com/gpu.present" = "true"
+      }
 
-     tolerations = [
-       {
-         key      = "nvidia.com/gpu"
-         operator = "Exists"
-         effect   = "NoSchedule"
-       }
-     ]
+      tolerations = [
+        {
+          key      = "nvidia.com/gpu"
+          operator = "Exists"
+          effect   = "NoSchedule"
+        }
+      ]
     })
   ]
 
