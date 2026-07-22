@@ -2,17 +2,6 @@ name: Kubernetes Pipeline (dev)
 
 on:
   workflow_call:
-  workflow_run:
-    workflows:
-      - "Terraform Pipeline (dev)"
-    types:
-      - completed
-  pull_request:
-    branches:
-      - master
-    paths:
-      - kubernetes/**
-      - .github/workflows/kubernetes-pipeline.yml
   workflow_dispatch:
 
 permissions:
