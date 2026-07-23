@@ -135,6 +135,12 @@ variable "gpu_ami_type" {
   default     = "AL2023_x86_64_NVIDIA"
 }
 
+variable "gpu_disk_size_gb" {
+  description = "Root EBS volume size (GiB) for GPU node group."
+  type        = number
+  default     = 200
+}
+
 variable "enable_nvidia_device_plugin" {
   description = "Enable self-managed NVIDIA device plugin via Helm."
   type        = bool

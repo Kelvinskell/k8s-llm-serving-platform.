@@ -78,6 +78,11 @@ variable "gpu_ami_type" {
   default     = "AL2023_x86_64_NVIDIA"
 }
 
+variable "gpu_disk_size_gb" {
+  description = "Root EBS volume size (GiB) for GPU node group."
+  type        = number
+}
+
 # Shared metadata
 variable "tags" {
   description = "Additional tags applied to all node group resources."

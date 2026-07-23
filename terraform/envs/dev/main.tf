@@ -53,6 +53,7 @@ module "nodegroups" {
   cpu_instance_types = var.cpu_instance_types
   gpu_instance_types = var.gpu_instance_types
   gpu_ami_type       = var.gpu_ami_type
+  gpu_disk_size_gb = var.gpu_disk_size_gb
   tags               = var.tags
 
 }

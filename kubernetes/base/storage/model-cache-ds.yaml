@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: model-cache-warmer
+  namespace: llm-serving
+  labels:
+    app.kubernetes.io/name: model-cache-warmer
+    app.kubernetes.io/part-of: llm-serving
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: model-cache-warmer
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: model-cache-warmer
+        app.kubernetes.io/part-of: llm-serving
+    spec:
+      serviceAccountName: model-cache-warmer
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: k8s-llm-serving-gpu-dev
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: cache-warmer
+          image: python:3.11-slim
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 0
+          env:
+            - name: CACHE_ROOT
+              value: /var/lib/llm-model-cache
+            - name: MODEL_REVISION
+              value: main
+            - name: HF_XET_HIGH_PERFORMANCE
+              value: "1"
+            - name: MODEL_IDS
+              value: |
+                microsoft/phi-2
+                microsoft/Phi-3-mini-4k-instruct
+                TinyLlama/TinyLlama-1.1B-Chat-v1.0
+          command:
+            - /bin/bash
+            - -lc
+            - |
+              set -euo pipefail
+              mkdir -p "${CACHE_ROOT}"
+              pip install --no-cache-dir huggingface_hub >/tmp/pip.log 2>&1
+              python /opt/scripts/model-cache-warmer.py
+              sync
+              echo "All model caches prepared on this node."
+              exec sleep infinity
+          resources:
+            requests:
+              cpu: 200m
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 6Gi
+          volumeMounts:
+            - name: model-cache
+              mountPath: /var/lib/llm-model-cache
+            - name: cache-script
+              mountPath: /opt/scripts
+              readOnly: true
+      volumes:
+        - name: model-cache
+          hostPath:
+            path: /var/lib/llm-model-cache
+            type: DirectoryOrCreate
+        - name: cache-script
+          configMap:
+            name: model-cache-warmer-script
+            defaultMode: 0555
