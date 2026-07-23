@@ -53,4 +53,10 @@ jobs:
       # Apply the Kubernetes manifests from the repo root.
       - name: Apply Kubernetes manifests
         run: |
+          kubectl apply -f kubernetes/base/namespaces
+          kubectl create configmap model-cache-warmer-script \
+            --namespace llm-serving \
+            --from-file=model-cache-warmer.py=kubernetes/base/storage/model-cache-warmer.py \
+            --dry-run=client -o yaml | kubectl apply -f -
+          kubectl apply -f kubernetes/base/storage
           kubectl apply -f kubernetes/base/monitoring

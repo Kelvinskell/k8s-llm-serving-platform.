@@ -1,0 +1,108 @@
+# Model cache warm-loading scenario.
+# Tests whether a pod can mount the shared model cache PVC, populate it via an init container,
+# and reuse cached model artifacts across restarts.
+#
+# Expected behavior:
+# - the init container downloads a small test model artifact set into /models on first run
+# - the pod then lists the cached files from the mounted PVC
+# - on a subsequent restart, the init container should skip the download because .cache-ready exists
+#
+# Run: kubectl apply -f scenarios/model-cache-demo.yaml
+# Observe: kubectl -n llm-serving get pod model-cache-demo -w
+# Cleanup: kubectl delete -f scenarios/model-cache-demo.yaml
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp3-sc
+provisioner: ebs.csi.aws.com
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
+parameters:
+  type: gp3
+  fsType: ext4
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: model-cache-pvc
+  namespace: llm-serving
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gp3-sc
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: model-cache-demo
+  namespace: llm-serving
+  labels:
+    app: model-cache-demo
+spec:
+  restartPolicy: Never
+
+  initContainers:
+    - name: warm-model-cache
+      image: python:3.11-slim
+      command:
+        - /bin/sh
+        - -c
+      args:
+        - |
+          set -e
+          mkdir -p /models
+
+          if [ -f /models/.cache-ready ]; then
+            echo "Model cache already present; skipping download."
+            exit 0
+          fi
+
+          pip install --no-cache-dir huggingface_hub >/tmp/pip.log 2>&1
+
+          python - <<'PY'
+          from huggingface_hub import hf_hub_download
+          from pathlib import Path
+
+          target_dir = Path("/models")
+          target_dir.mkdir(parents=True, exist_ok=True)
+
+          for filename in ["config.json", "tokenizer_config.json"]:
+              hf_hub_download(
+                  repo_id="hf-internal-testing/tiny-random-gpt2",
+                  filename=filename,
+                  local_dir=str(target_dir),
+                  local_dir_use_symlinks=False,
+              )
+
+          (target_dir / ".cache-ready").write_text("ready\n")
+          print("Downloaded model cache artifacts")
+          PY
+      volumeMounts:
+        - name: model-cache
+          mountPath: /models
+
+  containers:
+    - name: model-cache-check
+      image: python:3.11-slim
+      command:
+        - /bin/sh
+        - -c
+      args:
+        - |
+          echo "Model cache contents:"
+          find /models -maxdepth 2 -type f | sort
+          echo "Sleeping to keep pod alive for inspection..."
+          sleep 3600
+      volumeMounts:
+        - name: model-cache
+          mountPath: /models
+
+  volumes:
+    - name: model-cache
+      persistentVolumeClaim:
+        claimName: model-cache-pvc

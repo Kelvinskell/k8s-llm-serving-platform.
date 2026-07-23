@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: model-cache-warmer
+  namespace: llm-serving
+  labels:
+    app.kubernetes.io/name: model-cache-warmer
+    app.kubernetes.io/part-of: llm-serving
