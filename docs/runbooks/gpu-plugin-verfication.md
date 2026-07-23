@@ -109,7 +109,7 @@ Capture default scheduler behavior when GPU sharing mode is not enabled.
 
 ### Apply scenario
 ```bash
-kubectl apply -f load-testing/scenarios/gpu-baseline-exclusive.yaml
+kubectl apply -f scenarios/gpu-baseline-exclusive.yaml
 ```
 
 ### Observe behaviour using the following commands
@@ -171,5 +171,5 @@ Expected pattern:
 
 ### Cleanup
 ```bash
-kubectl delete -f load-testing/scenarios/gpu-baseline-exclusive.yaml
+kubectl delete -f scenarios/gpu-baseline-exclusive.yaml
 ```

@@ -7,9 +7,9 @@
 # - the pod then lists the cached files from the mounted PVC
 # - on a subsequent restart, the init container should skip the download because .cache-ready exists
 #
-# Run: kubectl apply -f load-testing/scenarios/model-cache-demo.yaml
+# Run: kubectl apply -f scenarios/model-cache-demo.yaml
 # Observe: kubectl -n llm-serving get pod model-cache-demo -w
-# Cleanup: kubectl delete -f load-testing/scenarios/model-cache-demo.yaml
+# Cleanup: kubectl delete -f scenarios/model-cache-demo.yaml
 
 apiVersion: v1
 kind: Pod
