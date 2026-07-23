@@ -53,4 +53,6 @@ jobs:
       # Apply the Kubernetes manifests from the repo root.
       - name: Apply Kubernetes manifests
         run: |
+          kubectl apply -f kubernetes/base/namespaces
+          kubectl apply -f kubernetes/base/storage
           kubectl apply -f kubernetes/base/monitoring
