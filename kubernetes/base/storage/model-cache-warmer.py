@@ -27,7 +27,7 @@ def ensure_model_cached(cache_root: Path, model_id: str, revision: str) -> None:
         repo_id=model_id,
         revision=revision,
         local_dir=str(target),
-        max_workers=1,
+        max_workers=4,
     )
 
     # Marker file to make subsequent runs safe and fast.
