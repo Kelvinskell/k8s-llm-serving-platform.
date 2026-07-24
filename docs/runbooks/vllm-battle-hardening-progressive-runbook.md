@@ -92,6 +92,23 @@ Checklist:
 - [ ] You identified queue depth or pending request metric
 - [ ] You identified KV cache-related metric(s)
 
+### 1.1 Required Metric Contract (Lock Before Stage 2)
+Map your live metric names to these required signals and keep this mapping in your experiment notes:
+- GPU Utilization %
+- GPU Memory %
+- KV Cache Usage %
+- Request Throughput
+- P99 Latency
+- Prefill Latency
+- Decode Latency
+- Pending Requests
+- Preemption Count
+- Scheduler preemptions
+
+Checklist:
+- [ ] All required signals are mapped to real metric names in your cluster
+- [ ] Every signal can be queried by pod and by time range
+
 ## Stage 2: Build a Clean Baseline Experiment
 Goal: measure one stable baseline before changing tuning knobs.
 
@@ -104,11 +121,18 @@ Baseline config example:
 
 Collect:
 - TTFT p50/p95
+- End-to-end latency p99
+- Prefill latency
+- Decode latency
 - Tokens per second
 - Request success rate
 - GPU util average and peak
+- GPU memory used ratio
+- KV cache usage %
 - FB used average and peak
 - Queue depth average and peak
+- Pending requests average and peak
+- Preemption count
 
 Checklist:
 - [ ] Baseline run completed
@@ -125,9 +149,15 @@ Overload pattern:
 
 Observe and mark the first point where each occurs:
 - p95 latency cliff
+- p99 latency cliff
+- prefill latency spike
+- decode latency spike
 - Queue depth sustained growth
+- Pending requests sustained growth
 - Throughput flattening
 - Error rate rise
+- Preemption count rise
+- KV cache usage approaching saturation
 - GPU util pinned high
 
 Checklist:
@@ -145,9 +175,15 @@ Sweep matrix:
 
 For each cell, run identical workload and record:
 - TTFT p95
+- End-to-end latency p99
+- Prefill latency
+- Decode latency
 - Throughput
 - Error rate
 - Queue behavior
+- Pending requests
+- Preemption count
+- KV cache usage %
 - GPU memory pressure
 
 Stop criteria for a bad cell:
@@ -159,6 +195,63 @@ Checklist:
 - [ ] Matrix executed
 - [ ] Best configuration selected
 - [ ] Clear trade-off statement written
+
+### 4.1 Advanced vLLM Engine Knob Drills (Required)
+Goal: understand scheduler, KV cache, and memory spill behavior using core vLLM runtime flags.
+
+Run these drills one knob at a time. Keep workload and prompt mix unchanged across runs.
+
+Knobs to include:
+- `--max-model-len`
+- `--max-num-batched-tokens`
+- `--enforce-eager`
+- `--kv-cache-dtype`
+- `--swap-space`
+- `--enable-prefix-caching`
+
+Recommended test order and values:
+- `max-model-len`: 1024, 2048, 4096
+- `max-num-batched-tokens`: 512, 1024, 2048
+- `enforce-eager`: false, true
+- `kv-cache-dtype`: auto, fp8
+- `swap-space`: 0, 4, 8 (GiB)
+- `enable-prefix-caching`: false, true
+
+What each knob teaches:
+- `max-model-len`: controls context ceiling and KV cache pressure.
+- `max-num-batched-tokens`: controls batch packing aggressiveness and queue drain behavior.
+- `enforce-eager`: disables graph capture optimizations and helps isolate compiler-related variance.
+- `kv-cache-dtype`: trades KV precision for memory headroom.
+- `swap-space`: enables CPU spill when KV pressure grows, with latency trade-offs.
+- `enable-prefix-caching`: improves repeated-prefix workloads, especially chat-style prompts.
+
+Signals to capture for every run:
+- TTFT p50/p95
+- End-to-end latency p99
+- Prefill latency
+- Decode latency
+- Tokens per second
+- Error rate
+- Queue depth average/peak
+- Pending requests average/peak
+- Preemption count
+- KV cache usage %
+- GPU memory used ratio
+- GPU utilization average/peak
+
+Expected failure signatures to watch:
+- Too high `max-model-len`: high VRAM pressure, earlier OOM, degraded concurrency.
+- Too high `max-num-batched-tokens`: latency spikes and queue jitter.
+- `enforce-eager=true` regressions: lower throughput, higher TTFT.
+- Aggressive `kv-cache-dtype` mismatch: potential quality instability or unsupported-path errors.
+- High `swap-space` dependence: tail-latency inflation under load.
+- Prefix cache disabled on repeated prompts: avoidable TTFT increase.
+
+Checklist:
+- [ ] All six knobs tested with controlled A/B runs
+- [ ] Best value selected per knob
+- [ ] Final combined profile validated under sustained load
+- [ ] Trade-off notes written for quality, latency, and memory
 
 ## Stage 5: Replica Behavior and Time-Slicing Reality
 Goal: learn what changes with 2 replicas on shared GPU slices.
@@ -204,9 +297,10 @@ Goal: build one battle console for fast decisions.
 
 Required panels:
 - Traffic: request rate and errors
-- Latency: TTFT p50/p95 and overall response latency
+- Latency: TTFT p50/p95, end-to-end p99, prefill latency, decode latency
 - Throughput: tokens per second
-- Queue: pending depth
+- Queue: pending depth and preemption count
+- KV cache: usage percentage and pressure trend
 - GPU: util, memory percentage, temperature, power
 - Capacity: per-replica comparison if replicas > 1
 
@@ -220,7 +314,13 @@ Goal: formalize what “production-like” means for your environment.
 Define hard gates:
 - Availability target
 - p95 TTFT target
+- p99 latency target
+- prefill latency target
+- decode latency target
 - Error-rate ceiling
+- pending request ceiling
+- preemption count ceiling
+- KV cache usage safety ceiling
 - Sustained load duration target
 - Alerting quality target
 
