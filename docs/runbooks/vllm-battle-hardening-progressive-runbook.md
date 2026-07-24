@@ -103,7 +103,6 @@ Map your live metric names to these required signals and keep this mapping in yo
 - Decode Latency
 - Pending Requests
 - Preemption Count
-- Scheduler preemptions
 
 Checklist:
 - [ ] All required signals are mapped to real metric names in your cluster
